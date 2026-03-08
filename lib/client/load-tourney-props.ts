@@ -8,7 +8,7 @@ import { castString } from "../util";
 export default function loadTourneyPros(
   mustOwn: boolean
 ): GetServerSideProps<{ tourney: Tourney }> {
-  return async ({ query, req }) => {
+  return async ({ query, req, res }) => {
     const id = castString(query.tourneyId);
 
     const dbTourney = await transaction((db) => fetchTourney(db, id));
@@ -19,7 +19,7 @@ export default function loadTourneyPros(
     const tourney = serializeTourney(dbTourney);
 
     if (mustOwn) {
-      const user = await getUserInfo(req);
+      const user = await getUserInfo(req, res);
       if (tourney.ownerId !== user?.id) {
         return {
           redirect: {

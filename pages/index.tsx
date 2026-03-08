@@ -32,8 +32,9 @@ const Content = ({ tourneys: fallback }: IndexProps) => {
 
 export const getServerSideProps: GetServerSideProps<IndexProps> = async ({
   req,
+  res,
 }) => {
-  const user = await getUserInfo(req);
+  const user = await getUserInfo(req, res);
 
   if (user === null) {
     return { props: { tourneys: null } };
