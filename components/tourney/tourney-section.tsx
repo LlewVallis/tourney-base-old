@@ -42,7 +42,22 @@ const TourneySection = ({
 
                 if (tab !== null) {
                   const image = await createBracketImage(bracket);
-                  tab.location.href = image;
+
+                  try {
+                    const blob = await (await fetch(image)).blob();
+                    const blobUrl = URL.createObjectURL(blob);
+                    tab.location.href = blobUrl;
+
+                    // Give the new tab enough time to load before revoking.
+                    setTimeout(() => URL.revokeObjectURL(blobUrl), 60_000);
+                  } catch {
+                    // Fallback for environments that fail blob conversion.
+                    tab.document.open();
+                    tab.document.write(
+                      `<img src="${image}" style="max-width:100%;height:auto;" />`
+                    );
+                    tab.document.close();
+                  }
                 }
               }}
             >
