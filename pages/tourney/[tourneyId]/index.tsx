@@ -2,7 +2,7 @@ import { GetServerSideProps } from "next";
 import { useRouter } from "next/router";
 import { useUser } from "../../../components/session-manager";
 import TourneySection from "../../../components/tourney/tourney-section";
-import { Tourney } from "../../../lib/api-types";
+import type { Tourney } from "../../../lib/api-types";
 import { useTourney } from "../../../lib/client/api";
 import loadTourneyProps from "../../../lib/client/load-tourney-props";
 
@@ -10,13 +10,13 @@ export interface TourneyProps {
   tourney: Tourney;
 }
 
-const Tourney = ({ tourney }: TourneyProps) => (
+const TourneyPage = ({ tourney }: TourneyProps) => (
   <main>
     <Content tourney={tourney} />
   </main>
 );
 
-export default Tourney;
+export default TourneyPage;
 
 const Content = ({ tourney: fallback }: TourneyProps) => {
   const [tourney, tourneyUpdater, apiResponse] = useTourney(fallback);

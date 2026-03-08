@@ -2,7 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import { Tourney } from "../../lib/api-types";
 import { ApiUpdater } from "../../lib/client/api";
-import { Bracket as Content } from "../../lib/client/bracket";
+import type { Bracket as BracketData } from "../../lib/client/bracket";
 import { BACKGROUND_COLOR_DARK } from "../../lib/client/theme";
 import CenterParagraph from "../center-paragraph";
 import { CONTENT_SIZE } from "../content-sizer";
@@ -33,14 +33,14 @@ const BracketSection = ({
   tourney,
   tourneyUpdater,
 }: {
-  bracket: Content | null;
+  bracket: BracketData | null;
   tourney: Tourney;
   tourneyUpdater: ApiUpdater<Tourney> | null;
 }) => (
   <BracketSizerOuter>
     <BracketSizerInner>
       <BracketContainer>
-        <Content
+        <BracketContent
           bracket={bracket}
           tourney={tourney}
           tourneyUpdater={tourneyUpdater}
@@ -52,12 +52,12 @@ const BracketSection = ({
 
 export default BracketSection;
 
-const Content = ({
+const BracketContent = ({
   bracket,
   tourney,
   tourneyUpdater,
 }: {
-  bracket: Content | null;
+  bracket: BracketData | null;
   tourney: Tourney;
   tourneyUpdater: ApiUpdater<Tourney> | null;
 }) => {

@@ -2,7 +2,6 @@ import React, { useEffect, useImperativeHandle, useRef, useState } from "react";
 import ReactSelect, {
   createFilter,
   SelectInstance,
-  StylesConfig,
 } from "react-select";
 import {
   DARK_TEXT_COLOR,
@@ -69,7 +68,9 @@ export default React.forwardRef<SelectHandle, SelectProps>(function Select(
 
   return (
     <ReactSelect
-      ref={(select) => (selectRef.current = select as SelectInstance<Option>)}
+      ref={(select) => {
+        selectRef.current = select as SelectInstance<Option>;
+      }}
       filterOption={createFilter({ stringify: (option) => option.label })}
       onChange={(value: any) => {
         if (onChange !== undefined) {
@@ -79,17 +80,17 @@ export default React.forwardRef<SelectHandle, SelectProps>(function Select(
       options={options}
       placeholder={placeholder ?? ""}
       noOptionsMessage={() => noOptionsMessage ?? "No options"}
-      styles={styles}
+      styles={styles as any}
     />
   );
 });
 
-const styles: StylesConfig = {
-  container: (provided) => ({
+const styles: any = {
+  container: (provided: any) => ({
     ...provided,
     width: "100%",
   }),
-  control: (provided) => ({
+  control: (provided: any) => ({
     ...provided,
     backgroundColor: FOREGROUND_COLOR,
     border: `0.125rem solid ${FOREGROUND_COLOR_DARK}`,
@@ -102,44 +103,44 @@ const styles: StylesConfig = {
       border: `0.125rem solid ${FOREGROUND_COLOR_DARK}`,
     },
   }),
-  valueContainer: (provided) => ({
+  valueContainer: (provided: any) => ({
     ...provided,
     padding: 0,
     width: 0,
   }),
-  placeholder: (provided) => ({
+  placeholder: (provided: any) => ({
     ...provided,
     marginLeft: 0,
     marginRight: 0,
   }),
-  input: (provided) => ({
+  input: (provided: any) => ({
     ...provided,
     margin: 0,
     paddingTop: 0,
     paddingBottom: 0,
   }),
-  singleValue: (provided) => ({
+  singleValue: (provided: any) => ({
     ...provided,
     marginLeft: 0,
     marginRight: 0,
   }),
-  indicatorsContainer: (provided) => ({
+  indicatorsContainer: (provided: any) => ({
     ...provided,
     height: "1.5rem",
     cursor: "pointer",
     filter: "brightness(80%)",
   }),
-  indicatorSeparator: (provided) => ({
+  indicatorSeparator: (provided: any) => ({
     ...provided,
     transform: "translateX(0.25rem) scaleY(2)",
   }),
-  menu: (provided) => ({
+  menu: (provided: any) => ({
     ...provided,
     backgroundColor: FOREGROUND_COLOR,
     border: `0.125rem solid ${FOREGROUND_COLOR_DARK}`,
     borderRadius: "0.25rem",
   }),
-  option: (_provided, { isFocused }) => ({
+  option: (_provided: any, { isFocused }: any) => ({
     color: DARK_TEXT_COLOR,
     padding: "0.125rem 0.25rem",
     cursor: "pointer",
@@ -147,7 +148,7 @@ const styles: StylesConfig = {
     textOverflow: "ellipsis",
     backgroundColor: isFocused ? "#ddd" : undefined,
   }),
-  noOptionsMessage: (provided) => ({
+  noOptionsMessage: (provided: any) => ({
     ...provided,
     paddingTop: "0.125rem",
     paddingBottom: "0.125rem",

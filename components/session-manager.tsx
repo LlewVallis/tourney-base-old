@@ -22,6 +22,6 @@ export function useUser(): UserInfo | null {
   return useContext(Context);
 }
 
-export function signInWithGoogle(): Promise<void> {
-  return signIn("google");
+export async function signInWithGoogle(): Promise<void> {
+  await signIn("google");
 }

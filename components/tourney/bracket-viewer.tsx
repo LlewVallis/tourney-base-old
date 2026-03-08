@@ -1,17 +1,25 @@
 import html2canvas from "html2canvas";
 import React, { useRef, useState } from "react";
-import ReactDOM from "react-dom";
+import { flushSync } from "react-dom";
+import { createRoot } from "react-dom/client";
 import { IoMdTrophy } from "react-icons/io";
 import { toast } from "react-toastify";
 import styled from "styled-components";
-import { Participant, Tourney } from "../../lib/api-types";
+import type {
+  Participant as ParticipantData,
+  Tourney as TourneyData,
+} from "../../lib/api-types";
 import {
   ApiUpdater,
   createMatchResult,
   deleteMatchResult,
   updateMatchResult,
 } from "../../lib/client/api";
-import { Bracket, Match, Round } from "../../lib/client/bracket";
+import type {
+  Bracket as BracketData,
+  Match as MatchData,
+  Round as RoundData,
+} from "../../lib/client/bracket";
 import {
   BACKGROUND_COLOR_LIGHT,
   MIDTONE_COLOR,
@@ -29,9 +37,9 @@ const BracketViewer = ({
   tourney,
   tourneyUpdater,
 }: {
-  bracket: Bracket;
-  tourney: Tourney;
-  tourneyUpdater: ApiUpdater<Tourney> | null;
+  bracket: BracketData;
+  tourney: TourneyData;
+  tourneyUpdater: ApiUpdater<TourneyData> | null;
 }) => {
   const containerRef = useRef<HTMLDivElement>(null);
 
@@ -51,7 +59,7 @@ const BracketViewer = ({
 
 export default BracketViewer;
 
-export function createBracketImage(bracket: Bracket): Promise<string> {
+export function createBracketImage(bracket: BracketData): Promise<string> {
   return new Promise((resolve) => {
     const outer = document.createElement("div");
     outer.style.position = "fixed";
@@ -63,25 +71,27 @@ export function createBracketImage(bracket: Bracket): Promise<string> {
     inner.style.fontSize = "30px";
     outer.appendChild(inner);
 
-    ReactDOM.render(
-      <BracketViewer
-        bracket={bracket}
-        tourney={bracket.tourney}
-        tourneyUpdater={null}
-      />,
-      inner,
-      () => {
-        html2canvas(inner, {
-          backgroundColor: null,
-        }).then((canvas) => {
-          resolve(canvas.toDataURL());
+    const root = createRoot(inner);
 
-          ReactDOM.unmountComponentAtNode(inner);
-          inner.remove();
-          outer.remove();
-        });
-      }
-    );
+    flushSync(() => {
+      root.render(
+        <BracketViewer
+          bracket={bracket}
+          tourney={bracket.tourney}
+          tourneyUpdater={null}
+        />
+      );
+    });
+
+    html2canvas(inner, {
+      backgroundColor: null,
+    }).then((canvas) => {
+      resolve(canvas.toDataURL());
+
+      root.unmount();
+      inner.remove();
+      outer.remove();
+    });
   });
 }
 
@@ -106,9 +116,9 @@ const Round = ({
   tourney,
   tourneyUpdater,
 }: {
-  round: Round;
-  tourney: Tourney;
-  tourneyUpdater: ApiUpdater<Tourney> | null;
+  round: RoundData;
+  tourney: TourneyData;
+  tourneyUpdater: ApiUpdater<TourneyData> | null;
 }) => (
   <RoundContainer>
     {round.matches.map((match, i) => (
@@ -141,9 +151,9 @@ const Match = ({
   tourney,
   tourneyUpdater,
 }: {
-  match: Match;
-  tourney: Tourney;
-  tourneyUpdater: ApiUpdater<Tourney> | null;
+  match: MatchData;
+  tourney: TourneyData;
+  tourneyUpdater: ApiUpdater<TourneyData> | null;
 }) => {
   const [processing, setProcessing] = useState(false);
 
@@ -223,13 +233,13 @@ const Participant = ({
   tourney,
   tourneyUpdater,
 }: {
-  participant: Participant | null;
-  opponent: Participant | null;
+  participant: ParticipantData | null;
+  opponent: ParticipantData | null;
   processing: boolean;
   setProcessing: (value: boolean) => void;
-  match: Match;
-  tourney: Tourney;
-  tourneyUpdater: ApiUpdater<Tourney> | null;
+  match: MatchData;
+  tourney: TourneyData;
+  tourneyUpdater: ApiUpdater<TourneyData> | null;
 }) => {
   const allowReporting =
     tourneyUpdater !== null &&
@@ -288,13 +298,13 @@ const ReportWinnerButton = ({
   tourney,
   tourneyUpdater,
 }: {
-  participant: Participant;
-  opponent: Participant;
+  participant: ParticipantData;
+  opponent: ParticipantData;
   processing: boolean;
   setProcessing: (value: boolean) => void;
-  match: Match;
-  tourney: Tourney;
-  tourneyUpdater: ApiUpdater<Tourney>;
+  match: MatchData;
+  tourney: TourneyData;
+  tourneyUpdater: ApiUpdater<TourneyData>;
 }) => {
   const isWinner = match.result?.winner === participant.id;
   const isLoser = match.result?.loser === participant.id;
@@ -356,7 +366,7 @@ const ReportWinnerButton = ({
   );
 };
 
-const MatchConnector = ({ match }: { match: Match }) => {
+const MatchConnector = ({ match }: { match: MatchData }) => {
   const { firstPredecessor: top, secondPredecessor: bottom } = match;
 
   if (top === null && bottom === null) {

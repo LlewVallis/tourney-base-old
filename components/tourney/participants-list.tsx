@@ -3,7 +3,11 @@ import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
 import { MdEdit, MdPerson } from "react-icons/md";
 import { toast } from "react-toastify";
 import styled from "styled-components";
-import { NAME_PATTERN, Participant, Tourney } from "../../lib/api-types";
+import { NAME_PATTERN } from "../../lib/api-types";
+import type {
+  Participant as ParticipantData,
+  Tourney as TourneyData,
+} from "../../lib/api-types";
 import {
   ApiUpdater,
   createParticipant,
@@ -20,8 +24,8 @@ const ParticipantsList = ({
   tourney,
   tourneyUpdater,
 }: {
-  tourney: Tourney;
-  tourneyUpdater: ApiUpdater<Tourney> | null;
+  tourney: TourneyData;
+  tourneyUpdater: ApiUpdater<TourneyData> | null;
 }) => (
   <>
     {tourneyUpdater === null ? null : (
@@ -49,8 +53,8 @@ const Participants = ({
   tourney,
   tourneyUpdater,
 }: {
-  tourney: Tourney;
-  tourneyUpdater: ApiUpdater<Tourney> | null;
+  tourney: TourneyData;
+  tourneyUpdater: ApiUpdater<TourneyData> | null;
 }) => {
   const [ssr, setSsr] = useState(true);
   useEffect(() => setSsr(false), []);
@@ -59,7 +63,7 @@ const Participants = ({
     return (
       <ParticipantsContainer>
         {tourney.participants.map((participant) => (
-          <Participant
+          <ParticipantCard
             key={participant.id}
             participant={participant}
             tourney={tourney}
@@ -79,8 +83,8 @@ const DndParticipants = ({
   tourney,
   tourneyUpdater,
 }: {
-  tourney: Tourney;
-  tourneyUpdater: ApiUpdater<Tourney>;
+  tourney: TourneyData;
+  tourneyUpdater: ApiUpdater<TourneyData>;
 }) => {
   const [participants, setParticipants] = useState(tourney.participants);
 
@@ -134,7 +138,7 @@ const DndParticipants = ({
                     {...provided.dragHandleProps}
                     ref={provided.innerRef}
                   >
-                    <Participant
+                    <ParticipantCard
                       participant={participant}
                       tourney={tourney}
                       tourneyUpdater={tourneyUpdater}
@@ -151,14 +155,14 @@ const DndParticipants = ({
   );
 };
 
-const Participant = ({
+const ParticipantCard = ({
   participant,
   tourney,
   tourneyUpdater,
 }: {
-  participant: Participant;
-  tourney: Tourney;
-  tourneyUpdater: ApiUpdater<Tourney> | null;
+  participant: ParticipantData;
+  tourney: TourneyData;
+  tourneyUpdater: ApiUpdater<TourneyData> | null;
 }) => {
   const [editing, setEditing] = useState(false);
 
@@ -192,7 +196,7 @@ const NonEditingParticipant = ({
   editable,
   setEditing,
 }: {
-  participant: Participant;
+  participant: ParticipantData;
   editable: boolean;
   setEditing(value: boolean): void;
 }) => (
@@ -230,9 +234,9 @@ const EditingParticipant = ({
   tourneyUpdater,
   setEditing,
 }: {
-  participant: Participant;
-  tourney: Tourney;
-  tourneyUpdater: ApiUpdater<Tourney>;
+  participant: ParticipantData;
+  tourney: TourneyData;
+  tourneyUpdater: ApiUpdater<TourneyData>;
   setEditing(value: boolean): void;
 }) => {
   const [processing, setProcessing] = useState(false);
@@ -312,8 +316,8 @@ const AddControls = ({
   tourney,
   tourneyUpdater,
 }: {
-  tourney: Tourney;
-  tourneyUpdater: ApiUpdater<Tourney>;
+  tourney: TourneyData;
+  tourneyUpdater: ApiUpdater<TourneyData>;
 }) => {
   const [processing, setProcessing] = useState(false);
 

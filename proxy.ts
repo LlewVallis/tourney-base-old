@@ -1,8 +1,8 @@
-import { NextMiddleware, NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 const BLACKLIST = /^\/api\/auth\/(signin|signout|verify-request)(\/|$)/;
 
-export const middleware: NextMiddleware = (req) => {
+export function proxy(req: NextRequest) {
   const path = req.nextUrl.pathname;
 
   if (path === "/api/auth/error") {
@@ -15,7 +15,11 @@ export const middleware: NextMiddleware = (req) => {
     const url = req.nextUrl.clone();
     url.pathname = "/404";
     return NextResponse.rewrite(url);
-  } else {
-    return NextResponse.next();
   }
+
+  return NextResponse.next();
+}
+
+export const config = {
+  matcher: ["/api/auth/:path*"],
 };

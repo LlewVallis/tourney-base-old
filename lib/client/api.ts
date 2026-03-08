@@ -183,13 +183,16 @@ function useApi<T>(endpoint: string, fallback: T): UseResult<T> {
     }
   }
 
-  function updater(value: T): void {
-    mutate({ type: "direct", value }, false);
-  }
-
-  updater.revalidate = async () => {
-    await mutate();
-  };
+  const updater: ApiUpdater<T> = Object.assign(
+    (value: T) => {
+      mutate({ type: "direct", value }, false);
+    },
+    {
+      revalidate: async () => {
+        await mutate();
+      },
+    }
+  );
 
   return [valueRef.current, updater, responseRef.current];
 }
