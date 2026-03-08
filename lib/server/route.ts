@@ -74,7 +74,7 @@ function route<I, O, A extends boolean>(
       return;
     }
 
-    const user = await getUserInfo(req);
+    const user = await getUserInfo(req, res);
     if (requireAuth && user === null) {
       res.status(401).end();
       return;
