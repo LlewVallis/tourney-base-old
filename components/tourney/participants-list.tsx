@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
+import { DragDropContext, Draggable, Droppable } from "@hello-pangea/dnd";
 import { MdEdit, MdPerson } from "react-icons/md";
 import { toast } from "react-toastify";
 import styled from "styled-components";
